@@ -1,0 +1,109 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   1_fd_cmd_envp.c                                    :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: thi-ming <marvin@42.fr>                    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2026/03/04 16:15:53 by thi-ming          #+#    #+#             */
+/*   Updated: 2026/03/07 18:40:06 by thi-ming         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
+#include "header.h"
+
+t_info	*check_fd(t_info *info)
+{
+	info->fd_infile = open(info->argv[1], O_RDONLY);
+	if (info->fd_infile < 0)
+		print_error(info, info->argv[1]);
+	info->fd_outfile = open(info->argv[4], O_WRONLY | O_CREAT | O_TRUNC, 0644);
+	if (info->fd_outfile < 0)
+		print_error(info, info->argv[4]);
+	return (info);
+}
+
+// print error w/o errno
+char	**split_cmd(char **cmd_args, char *argv, t_info *info)
+{
+	int	count;
+	int	i;
+
+	count = count_num(argv, is_space);
+	if (count == 0)
+		print_error(info, "Command line empty");
+	cmd_args = malloc(sizeof(char *) * (count + 1));
+	if (cmd_args == NULL)
+		print_error(info, "Malloc: ");
+	i = 0;
+	while (i < count)
+	{
+		cmd_args[i] = malloc(sizeof(char) * (ft_strlen(argv, is_space) + 1));
+		if (cmd_args[i] == NULL)
+			print_error(info, "Malloc: ");
+		cmd_args[i] = ft_strcpy(cmd_args[i], argv, ' ');
+		argv = argv + ft_strlen(argv, is_space);
+		i++;
+	}
+	cmd_args[i] = NULL;
+	return (cmd_args);
+}
+
+int	ft_strcmp(char *dst, char *src, int num)
+{
+	int	i;
+
+	i = 0;
+	while (i < num && dst[i] == src[i])
+		i++;
+	if (i == num - 1)
+		return (1);
+	return (0);
+}
+
+char	*find_path(char *path, t_info *info)
+{
+	int	i;
+
+	i = 0;
+	while (info->envp[i] != NULL)
+	{
+		if (ft_strcmp(info->envp[i], "PATH=", 5))
+		{
+			path = info->envp[i];
+			return (path);
+		}
+		i++;
+	}
+	return (NULL);
+}
+
+t_info	*split_envp(t_info *info)
+{
+	char	*path;
+	int		i;
+
+	path = NULL;
+	path = find_path(path, info);
+	if (path == NULL)
+	{
+		info->path = NULL;
+		return (info);
+	}
+	i = count_num(path, is_colon);
+	info->path = malloc(sizeof(char *) * (i + 1));
+	if (info->path == NULL)
+		print_error(info, "Malloc: ");
+	i = 0;
+	while (*path != '\0')
+	{
+		info->path[i] = malloc(ft_strlen(path, is_colon) + 1);
+		if (info->path[i] == NULL)
+			print_error(info, "Malloc: ");
+		info->path[i] = ft_strcpy(info->path[i], path, ':');
+		path = path + ft_strlen(path, is_colon);
+		i++;
+	}
+	info->path[i] = NULL;
+	return (info);
+}

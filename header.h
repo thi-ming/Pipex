@@ -6,7 +6,7 @@
 /*   By: thi-ming <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/18 19:07:33 by thi-ming          #+#    #+#             */
-/*   Updated: 2026/02/28 01:12:39 by thi-ming         ###   ########.fr       */
+/*   Updated: 2026/03/07 18:50:47 by thi-ming         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,31 +19,62 @@
 # include <fcntl.h>
 # include <errno.h>
 # include <string.h>
+# include <sys/wait.h>
 
 # define BUFFER_SIZE	1000;
 
-typedef struct	s_info
+typedef struct s_info
 {
-	int	argc;
+	int		argc;
 	char	**argv;
-	int	fd_infile;
-	int	fd_outfile;
-	int	p_fd[2];
+	char	**envp;	
+	int		fd_infile;
+	int		fd_outfile;
+	int		p_fd[2];
 	pid_t	pid1;
 	pid_t	pid2;
 	char	**cmd1;
 	char	**cmd2;
+	char	**path;
 }	t_info;
 
-void    file_error(char *argv);
-int	check_fd(t_info *info);
+void	file_error(char *argv);
+void	print_error(t_info *info, char *str);
+t_info	*check_fd(t_info *info);
+char	**split_cmd(char **cmd_args, char *argv, t_info *info);
+int		ft_strcmp(char *dst, char *src, int num);
+char	*find_path(char *path, t_info *info);
+t_info	*split_envp(t_info *info);
+//tool split
+int		is_space(char c);
+int		is_colon(char c);
+char	*ft_strcpy(char *dst, char *src, char c);
+int		ft_strlen(char *str, int (*condition)(char c));
+int		count_num(char *str, int (*condition)(char c));
+//pipe - fork - execve
+t_info	*ft_pipe(t_info *info);
+void	ft_waitpid(t_info *info);
+void	ft_fork1(t_info *info, pid_t pid);
+void	ft_fork2(t_info *info, pid_t pid);
+void	ft_execve(t_info *info, char **cmd);
+char	*get_path(char *path, char *cmd, t_info *info);
+char	*ft_strcon(char *res, char *path, char *cmd, t_info *info);
+int		abs_relav_path(char *cmd, t_info *info);
+//clean up - print error
+void	free_array(char **cmd);
+void	free_info(t_info *info);
+void	close_fd(t_info *info);
+void	print_error(t_info *info, char *str);
+//main functions
+t_info	*make_info(t_info *info, int argc, char **argv, char **envp);
+void	ft_piping(t_info *info);
 
-typedef struct	s_buffer
+#endif
+/*
+typedef struct s_buffer
 {
-	int	rd;
-	char	*buf;
+	int			rd;
+	char		*buf;
 	t_buffer	*next;
 }	t_buffer;
-
-
-# endif
+*/

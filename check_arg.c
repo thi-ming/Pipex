@@ -12,14 +12,6 @@
 
 #include "header.h"
 
-void	print_error(t_info *info, char *str)
-{
-	perror(str);
-	if (info != NULL)
-		free_info(info);
-	exit (1);
-}
-
 void	file_error(char *argv)
 {
 	int	i;
@@ -31,17 +23,6 @@ void	file_error(char *argv)
 	write (2, "Error: ", 7);
 	write (2, strerror(errno), i);
 	write (2, "\n", 1);
-	exit (1);
+	exit (EXIT_FAILURE);
 }
 
-int	check_fd(t_info *info)
-{
-	info->fd_infile = open(info->argv[1], O_RDONLY);
-	if (info->fd_infile < 0)
-		print_error(info, info->argv[1]);
-	info->fd_outfile = open(info->argv[4], O_WRONLY | O_CREAT | O_TRUNC, 0644);
-	if (info->fd_outfile < 0)
-		print_error(info, info->argv[4]);
-	else
-		return (1);
-}

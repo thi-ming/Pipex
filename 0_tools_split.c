@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   read_cmd.c                                         :+:      :+:    :+:   */
+/*   0_tools_split.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: thi-ming <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/28 07:01:56 by thi-ming          #+#    #+#             */
-/*   Updated: 2026/02/28 07:36:09 by thi-ming         ###   ########.fr       */
+/*   Updated: 2026/03/07 18:36:40 by thi-ming         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,19 +15,26 @@
 int	is_space(char c)
 {
 	if (c == ' ' || c == '\t' || c == '\f' || c == '\n' || c == '\r'
-			|| c == '\v' || c == '\0')
+		|| c == '\v' || c == '\0')
 		return (1);
 	return (0);
 }
 
-char	*ft_strcpy(char *dst, char *src)
+int	is_colon(char c)
+{
+	if (c == ':')
+		return (1);
+	return (0);
+}
+
+char	*ft_strcpy(char *dst, char *src, char c)
 {
 	int	i;
 
 	if (src == NULL)
 		return (NULL);
 	i = 0;
-	while (src[i] > 33)
+	while (src[i] > 32 && src[i] != c)
 	{
 		dst[i] = src[i];
 		i++;
@@ -36,52 +43,34 @@ char	*ft_strcpy(char *dst, char *src)
 	return (dst);
 }
 
-int	ft_strlen(char *str)
+int	ft_strlen(char *str, int (*condition)(char c))
 {
 	int	i;
 
 	i = 0;
-	while (!is_space(str[i]))
+	if (condition == NULL)
+	{
+		while (str[i] != '\0')
+			i++;
+		return (i);
+	}
+	while (!condition(str[i]))
 		i++;
 	return (i);
 }
 
-int	count_cmd(char *argv)
+int	count_num(char *str, int (*condition)(char c))
 {
-	int	cmd;
+	int	num;
 	int	i;
 
-	cmd = 0;
+	num = 0;
 	i = 0;
-	while (argv[i] != '\0')
+	while (str[i] != '\0')
 	{
-		if (argv[i] > 32 && argv[i] != 127 && isspace(argv[i + 1]))
-		       cmd++;
+		if (str[i] > 32 && str[i] != 127 && condition(str[i + 1]))
+			num++;
 		i++;
 	}
-	return (cmd);
+	return (num);
 }
-
-char	**split_cmd(char **cmd_args, char *argv, t_info *info)
-{
-	int	count;
-	int	i;
-
-	count = count_cmd(argv);
-	cmd_args = malloc(sizeof(char *) * (count + 1));
-	if (cmd_args == NULL)
-		print_error(info, "");
-	i = 0;
-	while (i < count)
-	{
-		cmd_args[i] = malloc(sizeof(char) * (ft_strlen(argv) + 1));
-		if (cmd_args[i] == NULL)
-			print_error(info, "");
-		cmd_args[i] = ft_strcpy(cnd_args[i], argv);
-		argv = argv + ft_strlen(argv);
-		i++;
-	}
-	cmd_args[i] = '\0';
-	return (cmd_args);
-}
-
