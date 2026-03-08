@@ -22,9 +22,13 @@ int	abs_relav_path(char *cmd, t_info *info)
 		if (cmd[i] == '/')
 		{
 			if (!access(cmd, F_OK))
+			{
 				if (!access(cmd, X_OK))
 					return (1);
-			print_error(info, cmd);
+				else
+					print_error(info, cmd, 126);
+			}
+			print_error(info, cmd, 127);
 		}
 		i++;
 	}
@@ -39,7 +43,7 @@ char	*ft_strcon(char *res, char *path, char *cmd, t_info *info)
 	len = ft_strlen(path, NULL) + ft_strlen(cmd, NULL);
 	res = malloc(len + 2);
 	if (res == NULL)
-		print_error(info, "Malloc: ");
+		print_error(info, "Malloc: ", errno);
 	start = res;
 	res = ft_strcpy(res, path, '\0');
 	res = res + ft_strlen(path, NULL);
@@ -49,7 +53,6 @@ char	*ft_strcon(char *res, char *path, char *cmd, t_info *info)
 	return (start);
 }
 
-// print error w/o errno
 char	*get_path(char *path, char *cmd, t_info *info)
 {
 	int	i;
@@ -61,17 +64,21 @@ char	*get_path(char *path, char *cmd, t_info *info)
 	{		
 		path = ft_strcon(path, info->path[i], cmd, info);
 		if (!access(path, F_OK))
+		{
 			if (!access(path, X_OK))
 				return (path);
+			else
+				print_error(info, cmd, 126);
+		}
 		free (path);
 		path = NULL;
 		i++;
 	}
-	print_error(info, "Invalid command");
+	print_error(info, cmd, 127);
 	return (NULL);
 }
 
-void	ft_execve(t_info *info, char **cmd)
+int	ft_execve(t_info *info, char **cmd)
 {
 	char	*path;
 
@@ -80,5 +87,5 @@ void	ft_execve(t_info *info, char **cmd)
 	execve(path, cmd, info->envp);
 	if (!abs_relav_path(cmd[0], info))
 		free(path);
-	return ;
+	return (0);
 }

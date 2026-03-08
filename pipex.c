@@ -18,7 +18,7 @@ t_info	*make_info(t_info *info, int argc, char **argv, char **envp)
 		exit (EXIT_FAILURE);
 	info = malloc(sizeof(t_info));
 	if (info == NULL)
-		print_error(info, "Malloc: ");
+		print_error(info, "Malloc: ", errno);
 	info->argc = argc;
 	info->argv = argv;
 	info->envp = envp;
@@ -39,8 +39,8 @@ t_info	*make_info(t_info *info, int argc, char **argv, char **envp)
 int	ft_piping(t_info *info, int code)
 {
 	info = ft_pipe(info);
-	ft_fork1(info, info->pid1);
-	code = ft_fork2(info, info->pid2, code);
+	ft_fork1(info);
+	code = ft_fork2(info, code);
 	return (code);
 }
 
@@ -53,5 +53,6 @@ int	main(int argc, char **argv, char **envp)
 	info = NULL;
 	info = make_info(info, argc, argv, envp);
 	code = ft_piping(info, code);
+	free_info(info);	
 	return (code);
 }

@@ -30,8 +30,8 @@ void	ft_putnbr(int num)
 
 t_info	*ft_pipe(t_info *info)
 {
-	if (pipe(info->p_fd))
-		print_error(info, "Pipe: ");
+	if (pipe(info->p_fd) == -1)
+		print_error(info, "Pipe: ", errno);
 	return (info);
 }	
 
@@ -39,12 +39,12 @@ int	ft_waitpid(t_info *info)
 {
 	pid_t	w;
 	int	status;	
-
+	
 	if (waitpid(info->pid1, NULL, 0) == -1)
 		perror("Waitpid the 1st child process: ");
-	w = waitpid(info->pid2, &status, 0);
+	w = waitpid(info->pid2, &status, 0);	
 	if (w == -1)
-		print_error(info, "Waitpid the 2nd child process: ");
+		print_error(info, "Waitpid the 2nd child process: ", errno);
 	if (WIFEXITED(status))
 		return (WEXITSTATUS(status));
 	if (WIFSIGNALED(status))
@@ -56,40 +56,34 @@ int	ft_waitpid(t_info *info)
 	return (0);
 }
 
-void	ft_fork1(t_info *info, pid_t pid)
+void	ft_fork1(t_info *info)
 {
-	pid = fork();
-	if (pid < 0)
-		print_error(info, "Fork: ");
-	if (pid == 0)
+	info->pid1 = fork();
+	if (info->pid1 < 0)
+		print_error(info, "Fork: ", errno);
+	if (info->pid1 == 0)
 	{
 		dup2(info->fd_infile, 0);
 		dup2(info->p_fd[1], 1);
-		close (info->fd_outfile);
-		close (info->p_fd[0]);
+		close_fd(info);
 		ft_execve(info, info->cmd1);
-		close (info->fd_infile);
-		close (info->p_fd[1]);
 	}
 	return ;
 }
 
-int	ft_fork2(t_info *info, pid_t pid, int code)
+int	ft_fork2(t_info *info, int code)
 {
-	pid = fork();
-	if (pid < 0)
-		print_error(info, "Fork: ");
-	if (pid == 0)
+	info->pid2 = fork();
+	if (info->pid2 < 0)
+		print_error(info, "Fork: ", errno);
+	if (info->pid2 == 0)
 	{
 		dup2(info->p_fd[0], 0);
 		dup2(info->fd_outfile, 1);
-		close (info->fd_infile);
-		close (info->p_fd[1]);
+		close_fd(info);
 		ft_execve(info, info->cmd2);
-		close (info->fd_outfile);
-		close (info->p_fd[0]);
 	}
-	if (pid > 0)
+	if (info->pid2 > 0)
 	{
 		close_fd(info);
 		code = ft_waitpid(info);

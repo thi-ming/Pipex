@@ -50,10 +50,37 @@ void	free_info(t_info *info)
 	free (info);
 }
 
-void	print_error(t_info *info, char *str)
+void	ft_print_str(char *str)
 {
-	perror(str);
-	if (info != NULL)
-		free_info(info);
-	exit (EXIT_FAILURE);
+	while (*str != '\0')
+	{
+		write (2, str, 1);
+		str++;
+	}
+	write (2, "\n", 1);
+	return ;
+}
+
+void	print_error(t_info *info, char *str, int code)
+{
+	if (code == errno || code == 2)
+	{
+		if (info != NULL)
+			free_info(info);
+		if (code == errno)
+			perror(str);
+		if (code == 2)
+			ft_print_str(str);
+	}
+	if (code == 127)
+	{
+		write(2, "Command not found: ", 19);
+		ft_print_str(str);
+	}
+	if (code == 126)
+	{
+		write(2, "Command not executable: ", 24);
+		ft_print_str(str);
+	}
+	exit (code);
 }

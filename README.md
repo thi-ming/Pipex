@@ -15,5 +15,7 @@ _This project has been created as part of the 42 curriculum by thi-ming_
 
 # Resources :
 	* https://dev.to/herbievine/42-a-comprehensive-guide-to-pipex-5165?utm_source=copilot.com
+	* https://en.wikipedia.org/wiki/Pipeline_(Unix)
+	* AI helps explain a lot of details and missing pieces of the parent - children processes.
 
 		

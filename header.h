@@ -36,8 +36,6 @@ typedef struct s_info
 	char	**path;
 }	t_info;
 
-void	file_error(char *argv);
-void	print_error(t_info *info, char *str);
 t_info	*check_fd(t_info *info);
 char	**split_cmd(char **cmd_args, char *argv, t_info *info);
 int		ft_strcmp(char *dst, char *src, int num);
@@ -52,9 +50,9 @@ int		count_num(char *str, int (*condition)(char c));
 //pipe - fork - execve
 t_info	*ft_pipe(t_info *info);
 int	ft_waitpid(t_info *info);
-void	ft_fork1(t_info *info, pid_t pid);
-int     	ft_fork2(t_info *info, pid_t pid, int code);
-void	ft_execve(t_info *info, char **cmd);
+void	ft_fork1(t_info *info);
+int     	ft_fork2(t_info *info, int code);
+int	ft_execve(t_info *info, char **cmd);
 char	*get_path(char *path, char *cmd, t_info *info);
 char	*ft_strcon(char *res, char *path, char *cmd, t_info *info);
 int		abs_relav_path(char *cmd, t_info *info);
@@ -62,7 +60,7 @@ int		abs_relav_path(char *cmd, t_info *info);
 void	free_array(char **cmd);
 void	free_info(t_info *info);
 void	close_fd(t_info *info);
-void	print_error(t_info *info, char *str);
+void	print_error(t_info *info, char *str, int code);
 //main functions
 t_info	*make_info(t_info *info, int argc, char **argv, char **envp);
 int		ft_piping(t_info *info, int code);

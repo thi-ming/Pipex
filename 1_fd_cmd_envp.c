@@ -16,24 +16,23 @@ t_info	*check_fd(t_info *info)
 {
 	info->fd_infile = open(info->argv[1], O_RDONLY);
 	if (info->fd_infile < 0)
-		print_error(info, info->argv[1]);
+		print_error(info, info->argv[1], errno);
 	info->fd_outfile = open(info->argv[4], O_WRONLY | O_CREAT | O_TRUNC, 0644);
 	if (info->fd_outfile < 0)
-		print_error(info, info->argv[4]);
+		print_error(info, info->argv[4], errno);
 	return (info);
 }
 
-// print error w/o errno
 char	**split_cmd(char **cmd_args, char *argv, t_info *info)
 {
 	int	i;
 
 	i = count_num(argv, is_space);
 	if (i == 0)
-		print_error(info, "Command line empty");
+		print_error(info, "Command line empty", 2);
 	cmd_args = malloc(sizeof(char *) * (i + 1));
 	if (cmd_args == NULL)
-		print_error(info, "Malloc: ");
+		print_error(info, "Malloc: ", errno);
 	cmd_args[i] = NULL;
 	i = 0;
 	while (*argv != '\0')
@@ -42,7 +41,7 @@ char	**split_cmd(char **cmd_args, char *argv, t_info *info)
 			argv++;
 		cmd_args[i] = malloc(sizeof(char) * (ft_strlen(argv, is_space) + 1));
 		if (cmd_args[i] == NULL)
-			print_error(info, "Malloc: ");
+			print_error(info, "Malloc: ", errno);
 		cmd_args[i] = ft_strcpy(cmd_args[i], argv, ' ');
 		argv = argv + ft_strlen(argv, is_space);
 		i++;
@@ -91,11 +90,10 @@ t_info	*split_envp(t_info *info)
 		info->path = NULL;
 		return (info);
 	}
-	i = count_num(path, is_colon);
-	info->path = malloc(sizeof(char *) * (i + 1));
+	info->path = malloc(sizeof(char *) * (count_num(path, is_colon) + 1));
 	if (info->path == NULL)
-		print_error(info, "Malloc: ");
-	info->path[i] = NULL;
+		print_error(info, "Malloc: ", errno);
+	info->path[count_num(path, is_colon)] = NULL;
 	i = 0;
 	while (*path != '\0')
 	{
@@ -103,7 +101,7 @@ t_info	*split_envp(t_info *info)
 			path++;
 		info->path[i] = malloc(ft_strlen(path, is_colon) + 1);
 		if (info->path[i] == NULL)
-			print_error(info, "Malloc: ");
+			print_error(info, "Malloc: ", errno);
 		info->path[i] = ft_strcpy(info->path[i], path, ':');
 		path = path + ft_strlen(path, is_colon);
 		i++;
