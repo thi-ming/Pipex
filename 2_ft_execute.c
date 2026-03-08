@@ -6,43 +6,54 @@
 /*   By: thi-ming <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/28 04:59:28 by thi-ming          #+#    #+#             */
-/*   Updated: 2026/03/07 19:57:30 by thi-ming         ###   ########.fr       */
+/*   Updated: 2026/03/08 11:48:20 by thi-ming         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "header.h"
 
+void	ft_putnbr(int num)
+{
+	char	c;
+
+	if (num < 0)
+	{
+		write (2, "-", 1);
+		num = -num;
+	}		
+	if (num > 9)
+		ft_putnbr(num / 10);
+	c = '0' + (num % 10);
+	write (2, &c, 1);
+	return ;
+}
+
 t_info	*ft_pipe(t_info *info)
 {
-	if (!pipe(info->p_fd))
+	if (pipe(info->p_fd))
 		print_error(info, "Pipe: ");
 	return (info);
 }	
 
-void	ft_waitpid(t_info *info)
+int	ft_waitpid(t_info *info)
 {
-	pid_t	w1;
-	int	status;
-	pid_t	w2;
+	pid_t	w;
+	int	status;	
 
-	w1 = waitpid(info->pid1, &status, 0);
-	if (w1 == -1)
-		print_error(info, "Waitpid: ");
+	if (waitpid(info->pid1, NULL, 0) == -1)
+		perror("Waitpid the 1st child process: ");
+	w = waitpid(info->pid2, &status, 0);
+	if (w == -1)
+		print_error(info, "Waitpid the 2nd child process: ");
 	if (WIFEXITED(status))
-		if (WEXITSTATUS(status) != 0)
-			return (WEXITSTATUS(status));
-	else
-		if (WIFESIGNALED(status))
-		{
-			write (2, "Child killed by signal: ", 24);
-			write (2, WTERMSIG(status),);
-			return (128 + WTERMSIG(status));
-		}
-
-	w2 = waitpid(info->pid2);
-	if (w2 == -1)
-		print_error(info, "Waitpid: ");
-	return ;
+		return (WEXITSTATUS(status));
+	if (WIFSIGNALED(status))
+	{
+		write (2, "Child killed by signal: ", 24);
+		ft_putnbr(WTERMSIG(status));
+		return (128 + WTERMSIG(status));
+	}
+	return (0);
 }
 
 void	ft_fork1(t_info *info, pid_t pid)
@@ -63,7 +74,7 @@ void	ft_fork1(t_info *info, pid_t pid)
 	return ;
 }
 
-void	ft_fork2(t_info *info, pid_t pid)
+int	ft_fork2(t_info *info, pid_t pid, int code)
 {
 	pid = fork();
 	if (pid < 0)
@@ -81,7 +92,7 @@ void	ft_fork2(t_info *info, pid_t pid)
 	if (pid > 0)
 	{
 		close_fd(info);
-		ft_waitpid(info);
+		code = ft_waitpid(info);
 	}
-	return ;
+	return (code);
 }

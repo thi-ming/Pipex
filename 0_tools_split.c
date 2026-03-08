@@ -22,7 +22,7 @@ int	is_space(char c)
 
 int	is_colon(char c)
 {
-	if (c == ':')
+	if (c == ':' || c == '\0')
 		return (1);
 	return (0);
 }
@@ -71,6 +71,7 @@ int	count_num(char *str, int (*condition)(char c))
 		if (str[i] > 32 && str[i] != 127 && condition(str[i + 1]))
 			num++;
 		i++;
+		//printf ("%d", i);
 	}
 	return (num);
 }

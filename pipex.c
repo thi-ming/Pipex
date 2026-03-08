@@ -22,27 +22,36 @@ t_info	*make_info(t_info *info, int argc, char **argv, char **envp)
 	info->argc = argc;
 	info->argv = argv;
 	info->envp = envp;
+	info->fd_infile = -1;
+	info->fd_outfile = -1;
+	info->p_fd[0] = -1;
+	info->p_fd[1] = -1;
+	info->cmd1 = NULL;
+	info->cmd2 = NULL;
+	info->path = NULL;
 	info = check_fd(info);
 	info->cmd1 = split_cmd(info->cmd1, info->argv[2], info);
-	info->cmd2 = split_cmd(info->cmd2, info->argv[3], into);
+	info->cmd2 = split_cmd(info->cmd2, info->argv[3], info);
 	info = split_envp(info);
 	return (info);
 }
 
-void	ft_piping(t_info *info)
+int	ft_piping(t_info *info, int code)
 {
 	info = ft_pipe(info);
-	info->pid1 = ft_fork(info, info->pid1);
-	info->pid2 = ft_fork(info, info->pid2);
-	return ;
+	ft_fork1(info, info->pid1);
+	code = ft_fork2(info, info->pid2, code);
+	return (code);
 }
 
 int	main(int argc, char **argv, char **envp)
 {
 	t_info	*info;
+	int	code;
 
+	code = 0;
 	info = NULL;
 	info = make_info(info, argc, argv, envp);
-	ft_piping(info);
-	return (0);
+	code = ft_piping(info, code);
+	return (code);
 }

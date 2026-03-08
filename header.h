@@ -21,8 +21,6 @@
 # include <string.h>
 # include <sys/wait.h>
 
-# define BUFFER_SIZE	1000;
-
 typedef struct s_info
 {
 	int		argc;
@@ -53,9 +51,9 @@ int		ft_strlen(char *str, int (*condition)(char c));
 int		count_num(char *str, int (*condition)(char c));
 //pipe - fork - execve
 t_info	*ft_pipe(t_info *info);
-void	ft_waitpid(t_info *info);
+int	ft_waitpid(t_info *info);
 void	ft_fork1(t_info *info, pid_t pid);
-void	ft_fork2(t_info *info, pid_t pid);
+int     	ft_fork2(t_info *info, pid_t pid, int code);
 void	ft_execve(t_info *info, char **cmd);
 char	*get_path(char *path, char *cmd, t_info *info);
 char	*ft_strcon(char *res, char *path, char *cmd, t_info *info);
@@ -67,10 +65,12 @@ void	close_fd(t_info *info);
 void	print_error(t_info *info, char *str);
 //main functions
 t_info	*make_info(t_info *info, int argc, char **argv, char **envp);
-void	ft_piping(t_info *info);
+int		ft_piping(t_info *info, int code);
+void	print_array(char **array);
 
 #endif
 /*
+# define BUFFER_SIZE	1000;
 typedef struct s_buffer
 {
 	int			rd;

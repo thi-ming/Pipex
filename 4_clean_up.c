@@ -34,11 +34,10 @@ void	close_fd(t_info *info)
 		close (info->fd_infile);
 	if (info->fd_outfile > 2)
 		close (info->fd_outfile);
-	if (info->p_fd != NULL)
-	{
+	if (info->p_fd[0] > 2)
 		close (info->p_fd[0]);
+	if (info->p_fd[1] > 2)
 		close (info->p_fd[1]);
-	}
 	return ;
 }
 
