@@ -38,11 +38,11 @@ t_info	*ft_pipe(t_info *info)
 int	ft_waitpid(t_info *info)
 {
 	pid_t	w;
-	int	status;	
-	
+	int		status;	
+
 	if (waitpid(info->pid1, NULL, 0) == -1)
 		perror("Waitpid the 1st child process: ");
-	w = waitpid(info->pid2, &status, 0);	
+	w = waitpid(info->pid2, &status, 0);
 	if (w == -1)
 		print_error(info, "Waitpid the 2nd child process: ", errno);
 	if (WIFEXITED(status))

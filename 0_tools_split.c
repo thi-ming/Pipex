@@ -70,7 +70,7 @@ int	count_num(char *str, int (*condition)(char c))
 	{
 		if (str[i] > 32 && str[i] != 127 && condition(str[i + 1]))
 			num++;
-		i++;		
+		i++;
 	}
 	return (num);
 }

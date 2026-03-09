@@ -49,10 +49,10 @@ int		ft_strlen(char *str, int (*condition)(char c));
 int		count_num(char *str, int (*condition)(char c));
 //pipe - fork - execve
 t_info	*ft_pipe(t_info *info);
-int	ft_waitpid(t_info *info);
+int		ft_waitpid(t_info *info);
 void	ft_fork1(t_info *info);
-int     	ft_fork2(t_info *info, int code);
-int	ft_execve(t_info *info, char **cmd);
+int		ft_fork2(t_info *info, int code);
+int		ft_execve(t_info *info, char **cmd);
 char	*get_path(char *path, char *cmd, t_info *info);
 char	*ft_strcon(char *res, char *path, char *cmd, t_info *info);
 int		abs_relav_path(char *cmd, t_info *info);
@@ -64,15 +64,5 @@ void	print_error(t_info *info, char *str, int code);
 //main functions
 t_info	*make_info(t_info *info, int argc, char **argv, char **envp);
 int		ft_piping(t_info *info, int code);
-void	print_array(char **array);
 
 #endif
-/*
-# define BUFFER_SIZE	1000;
-typedef struct s_buffer
-{
-	int			rd;
-	char		*buf;
-	t_buffer	*next;
-}	t_buffer;
-*/

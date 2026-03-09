@@ -16,7 +16,10 @@ t_info	*check_fd(t_info *info)
 {
 	info->fd_infile = open(info->argv[1], O_RDONLY);
 	if (info->fd_infile < 0)
-		print_error(info, info->argv[1], errno);
+	{
+		perror(info->argv[1]);
+		info->fd_infile = open("/dev/null", O_RDONLY);
+	}
 	info->fd_outfile = open(info->argv[4], O_WRONLY | O_CREAT | O_TRUNC, 0644);
 	if (info->fd_outfile < 0)
 		print_error(info, info->argv[4], errno);
@@ -86,10 +89,7 @@ t_info	*split_envp(t_info *info)
 	path = NULL;
 	path = find_path(path, info);
 	if (path == NULL)
-	{
-		info->path = NULL;
-		return (info);
-	}
+		return (info->path = NULL, info);
 	info->path = malloc(sizeof(char *) * (count_num(path, is_colon) + 1));
 	if (info->path == NULL)
 		print_error(info, "Malloc: ", errno);

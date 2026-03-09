@@ -15,7 +15,7 @@
 t_info	*make_info(t_info *info, int argc, char **argv, char **envp)
 {
 	if (argc != 5)
-		exit (EXIT_FAILURE);
+		print_error(info, "Wrong number of argument", -1);
 	info = malloc(sizeof(t_info));
 	if (info == NULL)
 		print_error(info, "Malloc: ", errno);
@@ -47,12 +47,12 @@ int	ft_piping(t_info *info, int code)
 int	main(int argc, char **argv, char **envp)
 {
 	t_info	*info;
-	int	code;
+	int		code;
 
 	code = 0;
 	info = NULL;
 	info = make_info(info, argc, argv, envp);
 	code = ft_piping(info, code);
-	free_info(info);	
+	free_info(info);
 	return (code);
 }

@@ -63,15 +63,6 @@ void	ft_print_str(char *str)
 
 void	print_error(t_info *info, char *str, int code)
 {
-	if (code == errno || code == 2)
-	{
-		if (info != NULL)
-			free_info(info);
-		if (code == errno)
-			perror(str);
-		if (code == 2)
-			ft_print_str(str);
-	}
 	if (code == 127)
 	{
 		write(2, "Command not found: ", 19);
@@ -81,6 +72,18 @@ void	print_error(t_info *info, char *str, int code)
 	{
 		write(2, "Command not executable: ", 24);
 		ft_print_str(str);
+	}
+	if (info != NULL)
+		free_info(info);
+	if (code == -1)
+	{
+		ft_print_str(str);
+		exit (EXIT_FAILURE);
+	}
+	if (code == errno)
+	{
+		perror(str);
+		exit (EXIT_FAILURE);
 	}
 	exit (code);
 }
