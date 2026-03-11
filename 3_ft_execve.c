@@ -59,6 +59,8 @@ char	*get_path(char *path, char *cmd, t_info *info)
 
 	if (abs_relav_path(cmd, info))
 		return (cmd);
+	if (info->path == NULL)
+		print_error(info, cmd, 127);
 	i = 0;
 	while (info->path[i] != NULL)
 	{		
@@ -82,6 +84,8 @@ int	ft_execve(t_info *info, char **cmd)
 {
 	char	*path;
 
+	if (cmd[0] == NULL)
+		print_error(info, cmd[0], 127);
 	path = NULL;
 	path = get_path(path, cmd[0], info);
 	execve(path, cmd, info->envp);

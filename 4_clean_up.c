@@ -52,6 +52,11 @@ void	free_info(t_info *info)
 
 void	ft_print_str(char *str)
 {
+	if (str == NULL)
+	{
+		write(2, "\n", 1);
+		return ;
+	}
 	while (*str != '\0')
 	{
 		write (2, str, 1);

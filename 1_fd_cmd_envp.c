@@ -31,14 +31,12 @@ char	**split_cmd(char **cmd_args, char *argv, t_info *info)
 	int	i;
 
 	i = count_num(argv, is_space);
-	if (i == 0)
-		print_error(info, "Command line empty", 2);
 	cmd_args = malloc(sizeof(char *) * (i + 1));
 	if (cmd_args == NULL)
 		print_error(info, "Malloc: ", errno);
 	cmd_args[i] = NULL;
 	i = 0;
-	while (*argv != '\0')
+	while (*argv != '\0' && count_num(argv, is_space) > 0)
 	{
 		while (is_space(*argv))
 			argv++;

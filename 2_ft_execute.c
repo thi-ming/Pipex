@@ -38,20 +38,28 @@ t_info	*ft_pipe(t_info *info)
 int	ft_waitpid(t_info *info)
 {
 	pid_t	w;
-	int		status;	
+	int		status;
+	int		count;
 
-	if (waitpid(info->pid1, NULL, 0) == -1)
-		perror("Waitpid the 1st child process: ");
-	w = waitpid(info->pid2, &status, 0);
-	if (w == -1)
-		print_error(info, "Waitpid the 2nd child process: ", errno);
-	if (WIFEXITED(status))
-		return (WEXITSTATUS(status));
-	if (WIFSIGNALED(status))
+	count = 0;
+	while (count < 2)
 	{
-		write (2, "Child killed by signal: ", 24);
-		ft_putnbr(WTERMSIG(status));
-		return (128 + WTERMSIG(status));
+		w = waitpid(-1, &status, 0);
+		if (w == -1)
+			print_error(info, "Waitpid: ", errno);
+		if (w == info->pid2)
+		{
+			if (WIFEXITED(status))
+				return (WEXITSTATUS(status));
+			else if (WIFSIGNALED(status))
+			{
+				write(2, "Child killed by signal: ", 24);
+				ft_putnbr(WTERMSIG(status));
+				write(2, "\n", 1);
+				return (128 + WTERMSIG(status));
+			}
+		}
+		count++;
 	}
 	return (0);
 }
